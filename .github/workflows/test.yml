@@ -1,0 +1,21 @@
+name: Tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install Lua
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y lua5.4
+      - name: Check Lua and layout behavior
+        run: |
+          find chua-day tests -name '*.lua' -exec luac5.4 -p {} \;
+          lua5.4 tests/run.lua
+      - name: Check installer
+        run: |
+          bash -n install.sh tests/install.sh
+          bash tests/install.sh
